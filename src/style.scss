@@ -1,0 +1,32 @@
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
+}
+
+.flex-rows {
+  display: flex;
+  flex: 1;
+  flex-direction: row;
+}
+
+.flex-columns {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+}
+
+.flex-stretch {
+  flex: 1;
+}
+
+.text-danger { color: #f04; }
+.text-warning { color: #fc4; }
+.text-success { color: #8c4; }
