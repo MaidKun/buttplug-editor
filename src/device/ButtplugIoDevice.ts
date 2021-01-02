@@ -13,7 +13,6 @@ export default class ButtplugIoDevice extends Device<ButtplugIoPort> {
   protected _inputPorts: ButtplugIoPort[];
   protected vibrators: number[] = [];
   protected _updatedPorts: ButtplugIoPort[] = []
-  protected _immediate?: NodeJS.Immediate;
 
   constructor(id: string, device: Buttplug.ButtplugClientDevice) {
     super(id, device.Name);
@@ -61,19 +60,7 @@ export default class ButtplugIoDevice extends Device<ButtplugIoPort> {
     this.triggerUpdate();
   }
 
-  private triggerUpdate() {
-    if (this._immediate) {
-      return;
-    }
-
-    this._immediate = setImmediate(() => {
-      this._immediate = undefined;
-
-      this.sendUpdates();
-    });
-  }
-
-  private sendUpdates() {
+  sendUpdates() {
     const ports = this._updatedPorts;
     this._updatedPorts = [];
 

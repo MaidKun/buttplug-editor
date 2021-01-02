@@ -2,7 +2,7 @@ import Device from '@/device/Device';
 import { ProjectFileComponentInterface } from '@/project/ProjectFileInterface';
 import Node from '../Node';
 
-export default class CustomDeviceNode extends Node {
+export default class CustomInputDeviceNode extends Node {
   static category = "device";
   public readonly device: Device;
 
@@ -11,17 +11,18 @@ export default class CustomDeviceNode extends Node {
 
     this.device = device;
 
-    for (const input of this.device.inputPorts()) {
-      switch (input.type) {
+    for (const output of this.device.outputPorts()) {
+      switch (output.type) {
         case 'number':
-          this.addInputInterface(input.name, 'NumberOption', 0, {type: 'number'})
+          this.addOutputInterface(output.name, {type: 'number'});
+          break;
       }
     }
   }
 
-  send() {
-    for (const input of this.device.inputPorts()) {
-      this.device.setInputValue(input, this.getInterface(input.name).value);
+  calculate() {
+    for (const {name, value} of this.device.getSensorValues()) {
+      this.getInterface(name).value = value;
     }
   }
 
@@ -29,12 +30,12 @@ export default class CustomDeviceNode extends Node {
     return {
       origin: 'device',
       name: this.type,
-      inputPorts: this.device.inputPorts().map(port => ({
+      outputPorts: this.device.outputPorts().map(port => ({
         id: port.id,
         name: port.name,
         type: port.type
       })),
-      outputPorts: []
+      inputPorts: []
     }
   }
 }

@@ -11,6 +11,7 @@ import RemoteSignal from '@/nodes/signal/RemoteSignal';
 import Average from '@/nodes/math/Average';
 import Memory from '@/nodes/math/Memory';
 import Random from '@/nodes/signal/Random';
+import CustomInputDeviceNode from '@/nodes/device/CustomInputDeviceNode';
 
 export interface NodeRegistryCategory{
   id: string;
@@ -18,7 +19,7 @@ export interface NodeRegistryCategory{
   icon: string;
 }
 
-export default class NodeRegistry {
+export default class NodeRegistry extends EventTarget {
   protected nodes: NodeConstructor[] = [];
   public readonly categories: NodeRegistryCategory[] = [];
 
@@ -39,6 +40,8 @@ export default class NodeRegistry {
   }
   
   add(node: NodeConstructor) {
+    this.dispatchEvent(new CustomEvent('nodetypeadded', {detail: node}));
+
     this.nodes.push(node);
     this.nodes.sort((a, b) => (a.componentName < b.componentName) ? -1 : 1);
   }
@@ -55,6 +58,24 @@ export default class NodeRegistry {
     }    
 
     this.add(CustomDevice);
+
+    if (device.outputPorts().length) {
+      this.addCustomDeviceInput(device);
+    }
+  }
+
+  addCustomDeviceInput(device: Device) {
+    class CustomInputDevice extends CustomInputDeviceNode {
+      static componentId = device.id + 'Input';
+      static componentName = device.name + ' (Signals)';
+      static description = device.description + ' (Signals)';
+
+      constructor() {
+        super(device);
+      }
+    }    
+
+    this.add(CustomInputDevice);
   }
 
   removeCustomDevice(device: Device) {

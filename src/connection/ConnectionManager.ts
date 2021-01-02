@@ -2,6 +2,7 @@ import AsyncCache from '@/utils/AsyncCache';
 import ButtplugIoConnection from './ButtplugIoConnection';
 import Connection from './Connection';
 import ConnectionConfiguration from './ConnectionConfiguration';
+import DevIoConnection from './DevIoConnection';
 
 export type ConnectionManagerState = 'disconnected' | 'connecting' | 'connected';
 
@@ -18,7 +19,8 @@ export default class ConnectionManager extends EventTarget {
 
   addDefaultConfigurations() {
     this.addConfiguration({protocol: 'buttplug', address: '127.0.0.1', port: 12345});
-    //this.addConfiguration({protocol: 'buttplug', address: '127.0.0.1', port: 12346});
+    this.addConfiguration({protocol: 'buttplug', address: '127.0.0.1', port: 12346});
+    this.addConfiguration({protocol: 'dev', address: '127.0.0.1', port: 12355});
   }
 
   addConfiguration(configuration: ConnectionConfiguration) {
@@ -67,6 +69,9 @@ export default class ConnectionManager extends EventTarget {
         await ButtplugIoConnection.initialize.invoke();
         return new ButtplugIoConnection(config.address, config.port);
 
+      case 'dev':
+        return new DevIoConnection(config.address, config.port);
+  
       default:
         throw new Error(`Invalid protocol: ${config.protocol}`)
     }
@@ -79,6 +84,12 @@ export default class ConnectionManager extends EventTarget {
     connection.addEventListener('deviceremoved', (e) => {
       this.dispatchEvent(new CustomEvent('deviceremoved', {detail: (e as CustomEvent).detail}))
     });
+  }
+
+  triggerDeviceEventsAgain() {
+    for (const connection of this._connections) {
+      connection.triggerDeviceEventsAgain();
+    }
   }
 
   get connections() {

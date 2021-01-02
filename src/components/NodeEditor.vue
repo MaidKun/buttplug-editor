@@ -6,17 +6,11 @@
 
 <script lang="ts">
 import { Component, Prop, Vue } from 'vue-property-decorator';
-import { Editor } from "@baklavajs/core";
-import { ViewPlugin } from "@baklavajs/plugin-renderer-vue";
-import { OptionPlugin } from "@baklavajs/plugin-options-vue";
-import { InterfaceTypePlugin } from "@baklavajs/plugin-interface-types";
-import { Engine } from "@baklavajs/plugin-engine";
 
 import Runtime from "../runtime/Runtime";
 import Node from '../nodes/Node';
 import { Drop } from 'vue-drag-drop'
 import Project from '@/project/Project';
-import VisualizeOption from './option/VisualizeOption.vue';
 
 interface ViewNodeInterface {
   position: {x: number; y: number};
@@ -33,29 +27,22 @@ export default class NodeEditor extends Vue {
   @Prop()
   project!: Project;
 
-  editor = new Editor();
-  viewPlugin = new ViewPlugin();
-  optionPlugin = new OptionPlugin();
-  intfTypePlugin = new InterfaceTypePlugin();
-  engine = new Engine(false);
   runtime = new Runtime();
 
-  created() {
-    this.editor.use(this.optionPlugin);
-    this.editor.use(this.viewPlugin);
-    this.editor.use(this.intfTypePlugin);
-    this.editor.use(this.engine);
+  get board() {
+    return this.project.currentWorkspace.currentBoard;
+  }
 
-    //this.viewPlugin.enableMinimap = true;
-    this.viewPlugin.registerOption('VisualizeOption', VisualizeOption);
+  get viewPlugin() {
+    return this.board.viewPlugin;
+  }
 
-    this.intfTypePlugin.addType("time", "#88ff00");
-    this.intfTypePlugin.addType("number", "#888888");
-    this.intfTypePlugin.addType("boolean", "#0088ff");
-    this.intfTypePlugin.addConversion("time", "number", v => v);
-    this.intfTypePlugin.addConversion("number", "time", v => v);
-    this.intfTypePlugin.addConversion("boolean", "number", v => v ? 1 : -1);
-    this.intfTypePlugin.addConversion("number", "boolean", v => v > 0 ? true : false);
+  get engine() {
+    return this.board.engine;
+  }
+
+  get editor() {
+    return this.board.editor;
   }
 
   mounted() {

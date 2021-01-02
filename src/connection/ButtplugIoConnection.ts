@@ -19,11 +19,17 @@ export default class ButtplugIoConnection extends Connection {
     this.connector = new Buttplug.ButtplugWebsocketConnectorOptions();
     this.connector.Address = `ws://${address}:${port}/`;
 
-    this.client = new Buttplug.ButtplugClient("ButtplugEditor");
+    this.client = new Buttplug.ButtplugClient("Buttplug Interactive Editor");
 
     this.client.addListener('deviceadded', this.addDevice);
     this.client.addListener('deviceremoved', this.removeDevice);
     this.client.addListener("disconnect", this.disconnected);
+  }
+
+  triggerDeviceEventsAgain() {
+    for (const detail of Object.values(this.devices)) {
+      this.dispatchEvent(new CustomEvent('deviceadded', {detail}))
+    }
   }
 
   disconnected=() => {

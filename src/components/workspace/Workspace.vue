@@ -1,5 +1,6 @@
 <template>
   <div class="flex-columns">
+    <WorkspaceMenu :project="project" v-on:projectchanged="setProject" />
     <div class="flex-rows">
       <div id="workspace-sidebar">
         <ComponentBrowser :nodes="project.nodes" />
@@ -16,21 +17,28 @@
 import { Component, Vue } from 'vue-property-decorator';
 import ComponentBrowser from './ComponentBrowser.vue';
 import NodeEditor from '../NodeEditor.vue';
+import WorkspaceMenu from './WorkspaceMenu.vue';
 import WorkspaceFooter from './WorkspaceFooter.vue';
 import Project from '@/project/Project';
+import ConnectionManager from '@/connection/ConnectionManager';
 
 @Component({
   components: {
     NodeEditor,
     ComponentBrowser,
+    WorkspaceMenu,
     WorkspaceFooter,
   },
 })
 export default class Workspace extends Vue {
-  project = new Project()
+  project = new Project(new ConnectionManager())
 
   created() {
     this.project.initialize();
+  }
+
+  setProject(project: Project) {
+    this.project = project;
   }
 }
 </script>

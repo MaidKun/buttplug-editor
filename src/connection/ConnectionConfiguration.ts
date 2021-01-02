@@ -1,5 +1,5 @@
 export default interface ConnectionConfiguration {
-  protocol: 'buttplug';
+  protocol: 'buttplug' | 'dev';
   address: string;
   port: number;
 }
