@@ -13,10 +13,27 @@ export default class Project {
   constructor(manager: ConnectionManager) {
     this.connections = manager;
 
-    this.connections.addEventListener('deviceadded', event => this.nodes.addCustomDevice((event as CustomEvent).detail));
-    this.connections.addEventListener('deviceremoved', event => this.nodes.removeCustomDevice((event as CustomEvent).detail));
+    this.connections.addEventListener('deviceadded', this.onDeviceAdded);
+    this.connections.addEventListener('deviceremoved', this.onDevicesRemoved);
+    this.nodes.addEventListener('nodetypeadded', this.onNodeTypeAdded);
+  }
 
-    this.nodes.addEventListener('nodetypeadded', event => this.workspace.registerNodeType((event as CustomEvent).detail));
+  unload() {
+    this.connections.removeEventListener('deviceadded', this.onDeviceAdded);
+    this.connections.removeEventListener('deviceremoved', this.onDevicesRemoved);
+    this.nodes.removeEventListener('nodetypeadded', this.onNodeTypeAdded);
+  }
+
+  private onDeviceAdded = (event: Event) => {
+    this.nodes.addCustomDevice((event as CustomEvent).detail)
+  }
+
+  private onDevicesRemoved = (event: Event) => {
+    this.nodes.removeCustomDevice((event as CustomEvent).detail)
+  }
+
+  private onNodeTypeAdded = (event: Event) => {
+    this.workspace.registerNodeType((event as CustomEvent).detail)
   }
 
   async initialize() {

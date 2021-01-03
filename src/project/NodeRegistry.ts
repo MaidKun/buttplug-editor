@@ -40,6 +40,11 @@ export default class NodeRegistry extends EventTarget {
   }
   
   add(node: NodeConstructor) {
+    const oldItem = this.nodes.findIndex(item => item.componentId === node.componentId);
+    if (oldItem >= 0) {
+      this.nodes.splice(oldItem, 1);
+    }
+
     this.dispatchEvent(new CustomEvent('nodetypeadded', {detail: node}));
 
     this.nodes.push(node);

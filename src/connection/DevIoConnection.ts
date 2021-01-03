@@ -60,6 +60,7 @@ export default class DevIoConnection extends Connection {
 
   triggerDeviceEventsAgain() {
     for (const detail of Object.values(this.devices)) {
+      console.log('dispatch');
       this.dispatchEvent(new CustomEvent('deviceadded', {detail}))
     }
   }

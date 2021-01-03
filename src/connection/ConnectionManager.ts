@@ -52,6 +52,7 @@ export default class ConnectionManager extends EventTarget {
         await connection.connect();
         status.connection = connection;
         this._connections.push(connection);
+        this.dispatchEvent(new CustomEvent('changed'));
       })
     }
 

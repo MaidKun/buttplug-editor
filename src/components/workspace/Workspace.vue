@@ -6,7 +6,7 @@
         <ComponentBrowser :nodes="project.nodes" />
       </div>
       <div class="flex-rows">
-        <NodeEditor :project="project" />
+        <NodeEditor :project="project" v-if="showEditor" />
       </div>
     </div>
     <WorkspaceFooter :project="project" />
@@ -32,13 +32,19 @@ import ConnectionManager from '@/connection/ConnectionManager';
 })
 export default class Workspace extends Vue {
   project = new Project(new ConnectionManager())
+  showEditor = true;
 
   created() {
     this.project.initialize();
   }
 
-  setProject(project: Project) {
+  async setProject(project: Project) {
+    this.project.unload();
     this.project = project;
+    
+    this.showEditor = false;
+    await this.$nextTick();
+    this.showEditor = true;
   }
 }
 </script>
@@ -46,6 +52,7 @@ export default class Workspace extends Vue {
 <style lang="scss">
 #workspace {
   flex-direction: column;
+  background: #333;
 }
 
 #workspace,

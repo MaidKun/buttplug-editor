@@ -17,7 +17,7 @@
 <script lang="ts">
 import { NodeConstructor } from '@/nodes/Node';
 import NodeRegistry from '@/project/NodeRegistry';
-import { Component, Prop, Vue } from 'vue-property-decorator';
+import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
 import { Drag } from 'vue-drag-drop'
 
 @Component({
@@ -31,6 +31,27 @@ export default class ComponentBrowserList extends Vue {
 
   @Prop()
   nodes!: NodeRegistry;
+
+  created() {
+    this.redraw = this.redraw.bind(this);
+    this.onNodesChanged(this.nodes);
+  }
+
+  @Watch('nodes')
+  onNodesChanged(nodes: NodeRegistry, oldNodes?: NodeRegistry) {
+    if (oldNodes) {
+      oldNodes.removeEventListener('notetypeadded', this.redraw);
+    }
+    nodes.addEventListener('nodetypeadded', this.redraw)
+  }
+
+  beforeDestroy() {
+    this.nodes.removeEventListener('nodetypeadded', this.redraw);
+  }
+
+  redraw() {
+    this.$forceUpdate();
+  }
 
   get items(): NodeConstructor[] {
     return this.nodes.filtered(this.category);
