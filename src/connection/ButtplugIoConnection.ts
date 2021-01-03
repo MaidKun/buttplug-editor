@@ -62,4 +62,8 @@ export default class ButtplugIoConnection extends Connection {
     await this.client.connect(this.connector);
     await this.client.startScanning();
   }
+
+  async disconnect() {
+    return this.client.disconnect();
+  }
 }

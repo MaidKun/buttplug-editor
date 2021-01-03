@@ -6,8 +6,9 @@ import DevIoConnection from './DevIoConnection';
 
 export type ConnectionManagerState = 'disconnected' | 'connecting' | 'connected';
 
-interface ConnectionConfigurationStatus {
+export interface ConnectionConfigurationStatus {
   configuration: ConnectionConfiguration;
+  status: ConnectionManagerState;
   connect?: AsyncCache<void>;
   connection?: Connection;
 }
@@ -24,7 +25,7 @@ export default class ConnectionManager extends EventTarget {
   }
 
   addConfiguration(configuration: ConnectionConfiguration) {
-    this._configurations.push({configuration});
+    this._configurations.push({status: 'disconnected', configuration});
   }
 
   async findConnections() {
@@ -39,6 +40,23 @@ export default class ConnectionManager extends EventTarget {
     }
   }
 
+  disconnect(status: ConnectionConfigurationStatus) {
+    if (!status.connection) {
+      return;
+    }
+
+    if (!status.connect) {
+      return;
+    }
+
+    const connection = status.connection;
+    status.status = 'disconnected';
+    status.connect = undefined;
+    status.connection = undefined;
+    connection.disconnect();
+    this.dispatchEvent(new CustomEvent('changed'));
+  }
+
   async connect(status: ConnectionConfigurationStatus) {
     if (status.connection) {
       return status.connection;
@@ -48,10 +66,15 @@ export default class ConnectionManager extends EventTarget {
 
     if (!status.connect) {
       status.connect = new AsyncCache(async () => {
+        status.status = 'connecting';
+        this.dispatchEvent(new CustomEvent('changed'));
+
         this.connectEvents(connection);
         await connection.connect();
         status.connection = connection;
         this._connections.push(connection);
+
+        status.status = 'connected';
         this.dispatchEvent(new CustomEvent('changed'));
       })
     }
@@ -59,7 +82,9 @@ export default class ConnectionManager extends EventTarget {
     try {
       await status.connect.invoke();
     } catch(error) {
+      status.status = 'disconnected';
       status.connect = undefined;
+      this.dispatchEvent(new CustomEvent('changed'));
       return null;
     }
   }
@@ -95,6 +120,10 @@ export default class ConnectionManager extends EventTarget {
 
   get connections() {
     return this._connections;
+  }
+
+  get configurations() {
+    return this._configurations;
   }
 
   get state() {

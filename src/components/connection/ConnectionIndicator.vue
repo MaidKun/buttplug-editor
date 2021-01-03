@@ -1,6 +1,6 @@
 <template>
   <div>
-    <button>
+    <button v-on:click="show">
       <span v-if="status === 'disconnected'">
         <i class="text-danger fas fa-circle"></i> No Connections
       </span>
@@ -20,6 +20,7 @@
 <script lang="ts">
 import ConnectionManager, { ConnectionManagerState } from '@/connection/ConnectionManager';
 import { Component, Prop, Vue, Watch } from 'vue-property-decorator';
+import ConnectionListWindow from './ConnectionListWindow.vue';
 
 @Component
 export default class ConnectionIndicator extends Vue {
@@ -56,6 +57,10 @@ export default class ConnectionIndicator extends Vue {
   beforeDestroy() {
     this.isMounted = false;
     this.manager.removeEventListener('changed', this.onChange.bind(this));
+  }
+
+  show() {
+    this.$root.$emit('popup', ConnectionListWindow, {manager: this.manager});
   }
 }
 </script>

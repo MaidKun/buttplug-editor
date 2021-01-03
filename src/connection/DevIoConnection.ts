@@ -136,4 +136,12 @@ export default class DevIoConnection extends Connection {
       }
     });
   }
+
+  async disconnect() {
+    if (!this.socket) {
+      return;
+    }
+
+    this.socket.close();
+  }
 }

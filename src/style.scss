@@ -30,3 +30,9 @@ body {
 .text-danger { color: #f04; }
 .text-warning { color: #fc4; }
 .text-success { color: #8c4; }
+
+.scroll-container {
+  flex: 1;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
