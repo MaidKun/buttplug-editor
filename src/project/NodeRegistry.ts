@@ -12,6 +12,9 @@ import Average from '@/nodes/math/Average';
 import Memory from '@/nodes/math/Memory';
 import Random from '@/nodes/signal/Random';
 import CustomInputDeviceNode from '@/nodes/device/CustomInputDeviceNode';
+import Conditional from '@/nodes/math/Conditional';
+import StateMachine from '@/nodes/math/StateMachine';
+import Vibrator from '@/nodes/device/Vibrator';
 
 export interface NodeRegistryCategory{
   id: string;
@@ -106,11 +109,14 @@ export default class NodeRegistry extends EventTarget {
     this.add(WaveGenerator);
     this.add(VisualizeWave);
     this.add(Calculation);
+    this.add(Conditional);
+    this.add(StateMachine);
     this.add(Clamp);
     this.add(RemoteSignal);
     this.add(Constant);
     this.add(Average);
     this.add(Memory);
+    this.add(Vibrator);
     this.add(Random);
   }
 }

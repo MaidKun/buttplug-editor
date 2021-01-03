@@ -39,6 +39,7 @@ export default class DevIoDevice extends Device<DevIoPort> {
     for (let index=0; index<(attributes.FeatureCount || 1); index++) {
       this._inputPorts.push({
         type: 'number',
+        tags: ['vibrate'],
         id: attributes.Identifier ? attributes.Identifier[index] : `vibrate${index}`,
         name: attributes.Description ? attributes.Description[index] : `Motor ${index + 1}`,
         buttplugType: 'vibrate',
@@ -56,6 +57,7 @@ export default class DevIoDevice extends Device<DevIoPort> {
     for (let index=0; index<(attributes.FeatureCount || 1); index++) {
       this._outputPorts.push({
         type: 'number',
+        tags: ['sensor'],
         id: attributes.Identifier ? attributes.Identifier[index] : `sensor${index}`,
         name: attributes.Description ? attributes.Description[index] : `Sensor ${index + 1}`,
         buttplugType: 'sensor',

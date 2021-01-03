@@ -33,6 +33,7 @@ export default class ButtplugIoDevice extends Device<ButtplugIoPort> {
     for (let index=0; index<(attributes.featureCount || 1); index++) {
       this._inputPorts.push({
         type: 'number',
+        tags: ['vibrate'],
         id: `vibrate${index}`,
         name: `Motor ${index + 1}`,
         buttplugType: 'vibrate',

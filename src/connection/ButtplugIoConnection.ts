@@ -2,6 +2,7 @@ import Connection from './Connection';
 import * as Buttplug from 'buttplug';
 import AsyncCache from '@/utils/AsyncCache';
 import ButtplugIoDevice from '@/device/ButtplugIoDevice';
+import Device from '@/device/Device';
 
 export default class ButtplugIoConnection extends Connection {
   static initialize = new AsyncCache<void>(async () => {
@@ -24,6 +25,10 @@ export default class ButtplugIoConnection extends Connection {
     this.client.addListener('deviceadded', this.addDevice);
     this.client.addListener('deviceremoved', this.removeDevice);
     this.client.addListener("disconnect", this.disconnected);
+  }
+
+  getDevices(): Device[] {
+    return Object.values(this.devices);
   }
 
   triggerDeviceEventsAgain() {

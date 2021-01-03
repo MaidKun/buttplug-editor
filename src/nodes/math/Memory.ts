@@ -12,14 +12,14 @@ export default class Memory extends Node {
   constructor() {
     super();
 
-    this.addOption("Only Positive Edge", "CheckboxOption", false);
+    this.addOption("On positive Edge only", "CheckboxOption", false);
     this.addInputInterface("Input", "NumberOption", 0, {type: "number"});
     this.addInputInterface("Trigger", "CheckboxOption", false, {type: "boolean"});
     this.addOutputInterface("Output", {type: "number"});
   }
 
   calculate() {
-    const triggerPositive = this.getOptionValue('Only Positive Edge');
+    const triggerPositive = this.getOptionValue('On positive Edge only');
     const trigger = this.getInterface('Trigger').value;
     
     if (trigger !== this.lastTrigger) {

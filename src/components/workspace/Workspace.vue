@@ -5,9 +5,9 @@
       <div id="workspace-sidebar">
         <ComponentBrowser :nodes="project.nodes" />
       </div>
-      <div class="flex-rows">
+      <ProjectProvider :project="project">
         <NodeEditor :project="project" v-if="showEditor" />
-      </div>
+      </ProjectProvider>
     </div>
     <WorkspaceFooter :project="project" />
   </div>
@@ -19,6 +19,7 @@ import ComponentBrowser from './ComponentBrowser.vue';
 import NodeEditor from '../NodeEditor.vue';
 import WorkspaceMenu from './WorkspaceMenu.vue';
 import WorkspaceFooter from './WorkspaceFooter.vue';
+import ProjectProvider from './ProjectProvider.vue';
 import Project from '@/project/Project';
 import ConnectionManager from '@/connection/ConnectionManager';
 
@@ -28,6 +29,7 @@ import ConnectionManager from '@/connection/ConnectionManager';
     ComponentBrowser,
     WorkspaceMenu,
     WorkspaceFooter,
+    ProjectProvider,
   },
 })
 export default class Workspace extends Vue {

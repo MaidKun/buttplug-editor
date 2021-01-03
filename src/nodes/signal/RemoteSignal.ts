@@ -1,3 +1,4 @@
+import DeviceFeatureOptionValue from '@/components/option/DeviceFeatureOptionValue';
 import Node from '../Node';
 
 export default class RemoteSignal extends Node {
@@ -9,11 +10,17 @@ export default class RemoteSignal extends Node {
   constructor() {
     super();
 
-    this.addOption("_", "TextOption", "Buttplug.IO does not support remote signals, yet");
+    this.addOption("Signal", "DeviceFeatureOption", undefined, undefined, {allowedTags: ['sensor']});
     this.addOutputInterface("Value", {type: "number"});
   }
 
   calculate() {
-    this.getInterface("Value").value = 0;
+    const signal = this.getOptionValue('Signal') as DeviceFeatureOptionValue | undefined;
+    if (!signal) {
+      this.getInterface("Value").value = 0;
+      return;
+    }
+
+    this.getInterface('Value').value = signal.getSensorValue();
   }
 }

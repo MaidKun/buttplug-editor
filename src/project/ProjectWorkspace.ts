@@ -18,7 +18,6 @@ export default class ProjectWorkspace {
   }
 
   registerNodeType(node: NodeConstructor) {
-    console.log(`Register ${node.componentId}`);
     this.currentBoard.editor.registerNodeType(node.componentId, node);
   }
 }

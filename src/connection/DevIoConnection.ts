@@ -1,3 +1,4 @@
+import Device from '@/device/Device';
 import DevIoDevice from '@/device/DevIoDevice';
 import Connection from './Connection';
 import * as DevIo from './DevIo';
@@ -14,6 +15,10 @@ export default class DevIoConnection extends Connection {
     super();
 
     this.url = `ws://${address}:${port}/`;
+  }
+
+  getDevices(): Device[] {
+    return Object.values(this.devices);
   }
 
   send(message: DevIo.DevIoClientMessage) {
@@ -60,7 +65,6 @@ export default class DevIoConnection extends Connection {
 
   triggerDeviceEventsAgain() {
     for (const detail of Object.values(this.devices)) {
-      console.log('dispatch');
       this.dispatchEvent(new CustomEvent('deviceadded', {detail}))
     }
   }

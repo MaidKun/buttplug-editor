@@ -2,6 +2,7 @@ export interface DevicePort {
   type: 'number';
   id: string;
   name: string;
+  tags: string[];
 }
 
 export interface DeviceSignalData {
