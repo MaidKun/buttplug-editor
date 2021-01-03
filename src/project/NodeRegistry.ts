@@ -26,6 +26,8 @@ export default class NodeRegistry extends EventTarget {
   protected nodes: NodeConstructor[] = [];
   public readonly categories: NodeRegistryCategory[] = [];
 
+  protected deviceNodes: {[id: string]: NodeConstructor[]} = {}
+
   get all() {
     return this.nodes;
   }
@@ -54,6 +56,25 @@ export default class NodeRegistry extends EventTarget {
     this.nodes.sort((a, b) => (a.componentName < b.componentName) ? -1 : 1);
   }
 
+  remove(node: NodeConstructor) {
+    const oldItem = this.nodes.findIndex(item => item.componentId === node.componentId);
+    if (oldItem >= 0) {
+      this.nodes.splice(oldItem, 1);
+    }
+
+    this.dispatchEvent(new CustomEvent('nodetyperemoved', {detail: node}));
+  }
+
+  addDeviceNode(device: Device, node: NodeConstructor) {
+    if (!this.deviceNodes[device.id]) {
+      this.deviceNodes[device.id] = [];
+    }
+
+    this.deviceNodes[device.id].push(node);
+
+    this.add(node);
+  }
+
   addCustomDevice(device: Device) {
     class CustomDevice extends CustomDeviceNode {
       static componentId = device.id;
@@ -65,7 +86,7 @@ export default class NodeRegistry extends EventTarget {
       }
     }    
 
-    this.add(CustomDevice);
+    this.addDeviceNode(device, CustomDevice);
 
     if (device.outputPorts().length) {
       this.addCustomDeviceInput(device);
@@ -83,11 +104,19 @@ export default class NodeRegistry extends EventTarget {
       }
     }    
 
-    this.add(CustomInputDevice);
+    this.addDeviceNode(device, CustomInputDevice);
   }
 
   removeCustomDevice(device: Device) {
-    console.error('TODO REMOVE DEVICE', device.name);
+    if (!this.deviceNodes[device.id]) {
+      return;
+    }
+
+    for (const node of this.deviceNodes[device.id]) {
+      this.remove(node)
+    }
+
+    this.deviceNodes[device.id] = [];
   }
 
   create(id: string) {

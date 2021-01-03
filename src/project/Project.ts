@@ -39,9 +39,6 @@ export default class Project {
   async initialize() {
     this.nodes.registerDefaultNodes();
     this.connections.triggerDeviceEventsAgain();
-
-    this.connections.addDefaultConfigurations();
-    this.connections.findConnections().catch(err => console.error(err));
   }
 
   get currentWorkspace() {

@@ -14,6 +14,22 @@ export default class RemoteSignal extends Node {
     this.addOutputInterface("Value", {type: "number"});
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  load(state: any) {
+    // TODO: Support loading selected device
+    state.options = []
+    super.load(state);
+  }
+
+  save() {
+    const state = super.save();
+
+    const signal = this.getOptionValue('Signal') as DeviceFeatureOptionValue | undefined;
+    state.options = [['Signal', signal ? signal.getHash() : null]];
+
+    return state;
+  }
+
   calculate() {
     const signal = this.getOptionValue('Signal') as DeviceFeatureOptionValue | undefined;
     if (!signal) {

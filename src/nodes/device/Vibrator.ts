@@ -14,6 +14,22 @@ export default class Vibrator extends Node {
     this.addInputInterface("Value", "NumberOption", 0, {type: "number"});
   }
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  load(state: any) {
+    // TODO: Support loading selected device
+    state.options = []
+    super.load(state);
+  }
+
+  save() {
+    const state = super.save();
+
+    const signal = this.getOptionValue('Vibrator') as DeviceFeatureOptionValue | undefined;
+    state.options = [['Vibrator', signal ? signal.getHash() : null]];
+
+    return state;
+  }
+
   send() {
     const signal = this.getOptionValue('Vibrator') as DeviceFeatureOptionValue | undefined;
     if (!signal) {

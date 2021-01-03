@@ -41,12 +41,15 @@ export default class ComponentBrowserList extends Vue {
   onNodesChanged(nodes: NodeRegistry, oldNodes?: NodeRegistry) {
     if (oldNodes) {
       oldNodes.removeEventListener('notetypeadded', this.redraw);
+      oldNodes.removeEventListener('notetyperemoved', this.redraw);
     }
     nodes.addEventListener('nodetypeadded', this.redraw)
+    nodes.addEventListener('nodetyperemoved', this.redraw)
   }
 
   beforeDestroy() {
     this.nodes.removeEventListener('nodetypeadded', this.redraw);
+    this.nodes.removeEventListener('nodetyperemoved', this.redraw);
   }
 
   redraw() {

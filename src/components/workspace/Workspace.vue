@@ -38,6 +38,8 @@ export default class Workspace extends Vue {
 
   created() {
     this.project.initialize();
+    this.project.connections.addDefaultConfigurations();
+    this.project.connections.findConnections().catch(err => console.error(err));
   }
 
   async setProject(project: Project) {

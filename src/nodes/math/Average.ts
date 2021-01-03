@@ -28,7 +28,7 @@ export default class Average extends Node {
   }
 
   getDuration() {
-    return Math.max(0.1, this.getOptionValue('Average Duration'))
+    return Math.max(0.1, this.getOptionValue('Duration'))
   }
 
   reset() {

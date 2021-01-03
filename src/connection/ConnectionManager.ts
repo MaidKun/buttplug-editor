@@ -19,6 +19,7 @@ export default class ConnectionManager extends EventTarget {
   private _configurations: ConnectionConfigurationStatus[] = [];
 
   addDefaultConfigurations() {
+console.log((new Error));
     this.addConfiguration({protocol: 'buttplug', address: '127.0.0.1', port: 12345});
     this.addConfiguration({protocol: 'buttplug', address: '127.0.0.1', port: 12346});
     this.addConfiguration({protocol: 'dev', address: '127.0.0.1', port: 12355});
@@ -32,12 +33,6 @@ export default class ConnectionManager extends EventTarget {
     this.state = 'connecting';
 
     await Promise.all(this._configurations.map(configuration => this.connect(configuration)));
-
-    if (this._connections.length === 0) {
-      this.state = 'disconnected';
-    } else {
-      this.state = 'connected';
-    }
   }
 
   disconnect(status: ConnectionConfigurationStatus) {
@@ -49,11 +44,19 @@ export default class ConnectionManager extends EventTarget {
       return;
     }
 
+    this._connections = this._connections.filter(item => item !== status.connection);
+
     const connection = status.connection;
     status.status = 'disconnected';
     status.connect = undefined;
     status.connection = undefined;
     connection.disconnect();
+
+    if (this._connections.length === 0) {
+      this.state = 'disconnected';
+    } else {
+      this.state = 'connected';
+    }
     this.dispatchEvent(new CustomEvent('changed'));
   }
 
@@ -75,6 +78,13 @@ export default class ConnectionManager extends EventTarget {
         this._connections.push(connection);
 
         status.status = 'connected';
+
+        if (this._connections.length === 0) {
+          this.state = 'disconnected';
+        } else {
+          this.state = 'connected';
+        }
+
         this.dispatchEvent(new CustomEvent('changed'));
       })
     }

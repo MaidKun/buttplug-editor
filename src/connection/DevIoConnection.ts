@@ -98,12 +98,20 @@ export default class DevIoConnection extends Connection {
   }
 
   disconnected=() => {
-    console.error('TODO: disconnected');
-    // for (const device of Object.values(this.devices)) {
-    //   this.removeDevice(device.device);
-    // }
+    for (const device of Object.values(this.devices)) {
+      this.removeDevice(device.device);
+    }
 
-    // this.devices = {}
+    this.devices = {}
+  }
+
+  removeDevice=(device: DevIo.DevIoDeviceInfo) => {
+    if (!this.devices[device.DeviceIndex]) {
+      return;
+    }
+
+    this.dispatchEvent(new CustomEvent('deviceremoved', {detail: this.devices[device.DeviceIndex]}));
+    delete this.devices[device.DeviceIndex];
   }
   
   connect() {
