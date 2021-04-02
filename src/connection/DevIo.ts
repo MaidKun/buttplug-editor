@@ -6,6 +6,8 @@ export interface DevIoDeviceMessage {
 
 export type DevIoVibrateDeviceMessage = DevIoDeviceMessage;
 
+export type DevIoRotateDeviceMessage = DevIoDeviceMessage;
+
 export type DevIoSensorReadMessage = DevIoDeviceMessage;
 
 export interface DevIoDeviceInfo {
@@ -15,6 +17,7 @@ export interface DevIoDeviceInfo {
     StopDeviceCmd?: DevIoDeviceMessage;
     SensorReadCmd?: DevIoSensorReadMessage;
     VibrateCmd?: DevIoVibrateDeviceMessage;
+    RotateCmd?: DevIoRotateDeviceMessage;
   };
 }
 
@@ -47,6 +50,11 @@ export interface DevIoVibrateCmdMsg extends DevIoMessage {
   Speeds: Array<{Index: number, Speed: number}>;
 }
 
+export interface DevIoRotateCmdMsg extends DevIoMessage {
+  DeviceIndex: number;
+  Speeds: Array<{Index: number, Speed: number, Clockwise: boolean}>;
+}
+
 export interface DevIoSensorSubscribeCmdMsg extends DevIoMessage {
   DeviceIndex: number;
   Sensor: number;
@@ -62,6 +70,7 @@ export interface DevIoClientMessage {
   RequestServerInfo?: DevIoRequestServerInfoMessage;
   RequestDeviceList?: DevIoRequestDeviceList;
   VibrateCmd?: DevIoVibrateCmdMsg;
+  RotateCmd?: DevIoRotateCmdMsg;
   SensorSubscribeCmd?: DevIoSensorSubscribeCmdMsg;
 }
 
